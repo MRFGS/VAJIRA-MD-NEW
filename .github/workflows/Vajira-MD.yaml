@@ -1,4 +1,4 @@
-name: MRFG-V-MD
+name: Node.js CI
 
 on:
   push:
@@ -8,15 +8,14 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
+    - cron: '0 */6 * * *'  # සෑම පැය 6 කටම
 
 concurrency:
-  group: nodejs-app  # This ensures that jobs are grouped
-  cancel-in-progress: true  # This will cancel any in-progress job
+  group: nodejs-app  # මේවා කණ්ඩායම් කරයි
+  cancel-in-progress: true  # නව වැඩ කටයුතු ආරම්භ කළ විට පැවැත්වෙන වැඩ කටයුතු අහෝසි කරයි
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -24,16 +23,22 @@ jobs:
         node-version: [20.x]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies
-      run: npm install
+      - name: Map LOGO to LOGO
+        run: echo "LOGO=${{ secrets.LOGO }}" >> $GITHUB_ENV
 
-    - name: start
-      run: npm start
+      - name: Map POSTGRESQL_URL to POSTGRESQL_URL
+        run: echo "POSTGRESQL_URL=${{ secrets.POSTGRESQL_URL }}" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Start application
+        run: npm start
